@@ -119,3 +119,7 @@ video {
 .stop {
   color: #cc3b33;
 }
+
+.hidden {
+  display: none;
+}
