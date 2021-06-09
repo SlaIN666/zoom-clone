@@ -5,7 +5,7 @@ app.use(cors())
 const server = require('http').Server(app)
 const io = require('socket.io')({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://afternoon-cliffs-42893.herokuapp.com',
   },
 })
 const { ExpressPeerServer } = require('peer')
