@@ -115,9 +115,17 @@ video {
   color: #eb534b;
 }
 
-.unmute,
 .stop {
   color: #cc3b33;
+}
+
+.streaming {
+  color: #2abb4a;
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100%;
 }
 
 .hidden {
