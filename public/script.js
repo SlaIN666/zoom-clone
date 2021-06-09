@@ -3,7 +3,7 @@ const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443',
+  port: '3000',
 })
 let myVideoStream = null
 let myCaptureStream = null
