@@ -137,13 +137,26 @@ function onLeaveButtonClick(e) {
 
 async function onScreenCaptureButtonClick() {
   if (myCaptureStream) {
-    screenCaptureButton.classList.remove('streaming')
-    myVideo.srcObject.getTracks().forEach((track) => track.stop())
-    myVideo.srcObject = myVideoStream
-    myCaptureStream = null
+    changeToCameraStream()
     return
   }
-  myCaptureStream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: true } })
+
+  try {
+    myCaptureStream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: true } })
+    Object.keys(myPeer.connections)[0]
+      .peerConnection.getSenders()[1]
+      .replaceTrack(myCaptureStream.getTracks()[0])
+  } catch (error) {
+    return
+  }
+
   screenCaptureButton.classList.add('streaming')
   myVideo.srcObject = myCaptureStream
+}
+
+function changeToCameraStream() {
+  screenCaptureButton.classList.remove('streaming')
+  myVideo.srcObject.getTracks().forEach((track) => track.stop())
+  myVideo.srcObject = myVideoStream
+  myCaptureStream = null
 }
