@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io('/', { transports: ['polling'] })
 const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
