@@ -1,4 +1,4 @@
-const socket = io('/', { transports: ['polling'], upgrade: true })
+const socket = io('http://localhost:4000')
 const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
@@ -156,12 +156,13 @@ async function onScreenCaptureButtonClick() {
 }
 
 function changeToCameraStream() {
-  screenCaptureButton.classList.remove('streaming')
-  myVideo.srcObject.getTracks().forEach((track) => track.stop())
+  console.log(myVideoStream.getTracks()[1])
   const key = Object.keys(myPeer.connections)[0]
   myPeer.connections[key][0].peerConnection
     .getSenders()[1]
-    .replaceTrack(myVideoStream.getTracks()[0])
+    .replaceTrack(myVideoStream.getTracks()[1])
+
+  screenCaptureButton.classList.remove('streaming')
   myVideo.srcObject = myVideoStream
   myCaptureStream = null
 }

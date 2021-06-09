@@ -3,9 +3,10 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 const server = require('http').Server(app)
-const io = require('socket.io')(server, {
-  transports: ['polling', 'websocket'],
-  allowUpgrades: true,
+const io = require('socket.io')({
+  cors: {
+    origin: 'http://localhost:3000',
+  },
 })
 const { ExpressPeerServer } = require('peer')
 const peerServer = ExpressPeerServer(server, {
@@ -40,4 +41,5 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(process.env.PORT || 3030)
+server.listen(process.env.PORT || 3000)
+io.listen(4000)
