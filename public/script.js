@@ -3,7 +3,7 @@ const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443',
+  port: '3030',
 })
 let myVideoStream = null
 let myCaptureStream = null
@@ -158,6 +158,10 @@ async function onScreenCaptureButtonClick() {
 function changeToCameraStream() {
   screenCaptureButton.classList.remove('streaming')
   myVideo.srcObject.getTracks().forEach((track) => track.stop())
+  const key = Object.keys(myPeer.connections)[0]
+  myPeer.connections[key][0].peerConnection
+    .getSenders()[1]
+    .replaceTrack(myVideoStream.getTracks()[0])
   myVideo.srcObject = myVideoStream
   myCaptureStream = null
 }
