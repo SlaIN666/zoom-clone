@@ -3,11 +3,7 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 const server = require('http').Server(app)
-const io = require('socket.io')({
-  cors: {
-    origin: 'https://afternoon-cliffs-42893.herokuapp.com',
-  },
-})
+const io = require('socket.io')(server)
 const { ExpressPeerServer } = require('peer')
 const peerServer = ExpressPeerServer(server, {
   debug: true,
@@ -41,5 +37,4 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(process.env.PORT || 3000)
-io.listen(4000)
+server.listen(process.env.PORT || 3030)

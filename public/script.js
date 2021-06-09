@@ -1,9 +1,9 @@
-const socket = io('https://afternoon-cliffs-42893.herokuapp.com:4000')
+const socket = io()
 const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443',
+  port: '3030',
 })
 let myVideoStream = null
 let myCaptureStream = null
