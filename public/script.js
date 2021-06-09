@@ -1,4 +1,4 @@
-const socket = io('http://localhost:4000')
+const socket = io('https://afternoon-cliffs-42893.herokuapp.com:4000')
 const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
