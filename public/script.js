@@ -143,8 +143,9 @@ async function onScreenCaptureButtonClick() {
 
   try {
     myCaptureStream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: true } })
-    Object.keys(myPeer.connections)[0]
-      .peerConnection.getSenders()[1]
+    const key = Object.keys(myPeer.connections)[0]
+    myPeer.connections[key][0].peerConnection
+      .getSenders()[1]
       .replaceTrack(myCaptureStream.getTracks()[0])
   } catch (error) {
     return
