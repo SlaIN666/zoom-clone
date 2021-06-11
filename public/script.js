@@ -2,7 +2,7 @@ const socket = io('/', { transports: ['polling'] })
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443',
+  port: '3030',
 })
 let stream = null
 let myVideoStream = null
@@ -22,20 +22,22 @@ const cameraButton = document.querySelector('#cameraButton')
 const chatButton = document.querySelector('#chatButton')
 const screenCaptureButton = document.querySelector('#screenCaptureButton')
 
+socket.on('user-connected', (userId) => {
+  connectToNewUser(userId, stream)
+})
+socket.on('user-disconnected', (userId) => {
+  console.log(userId)
+})
+
+myPeer.on('open', (id) => {
+  socket.emit('join-room', ROOM_ID, id)
+})
 myPeer.on('call', (call) => {
   call.answer(stream)
   const video = document.createElement('video')
   call.on('stream', (userVideoStream) => {
     addVideoStream(video, userVideoStream)
   })
-})
-
-myPeer.on('open', (id) => {
-  socket.emit('join-room', ROOM_ID, id)
-})
-
-socket.on('user-connected', (userId) => {
-  connectToNewUser(userId, stream)
 })
 
 socket.on('createMessage', (message) => {
@@ -71,18 +73,13 @@ async function initApp() {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const userVideo = document.createElement('video')
+  userVideo.id = userId
   call.on('stream', (userVideoStream) => {
     addVideoStream(userVideo, userVideoStream)
-  })
-  call.on('close', () => {
-    userVideo.remove()
   })
 }
 
 function addVideoStream(video, stream) {
-  video.addEventListener('dblclick', (e) => {
-    e.currentTarget.classList.toggle('fullscreen')
-  })
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
