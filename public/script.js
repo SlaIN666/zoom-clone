@@ -1,4 +1,4 @@
-const socket = io('/', { transports: ['polling'] })
+const socket = io('/')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
@@ -26,7 +26,7 @@ socket.on('user-connected', (userId) => {
   connectToNewUser(userId, stream)
 })
 socket.on('user-disconnected', (userId) => {
-  document.querySelector(`#${userId}`).remove()
+  console.log(userId)
 })
 
 myPeer.on('open', (id) => {
@@ -73,9 +73,11 @@ async function initApp() {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const userVideo = document.createElement('video')
-  userVideo.id = userId
   call.on('stream', (userVideoStream) => {
     addVideoStream(userVideo, userVideoStream)
+  })
+  call.on('close', () => {
+    userVideo.remove()
   })
 }
 
