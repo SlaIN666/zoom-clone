@@ -26,7 +26,7 @@ socket.on('user-connected', (userId) => {
   connectToNewUser(userId, stream)
 })
 socket.on('user-disconnected', (userId) => {
-  document.querySelector(`#${userId}`).remove()
+  document.querySelector(`video[data-user-id="${userId}"]`).remove()
 })
 socket.on('createMessage', (message) => {
   const chatMessage = document.createElement('li')
@@ -70,9 +70,10 @@ async function initApp() {
 }
 
 function connectToNewUser(userId, stream) {
+  debugger
   const call = myPeer.call(userId, stream)
   const userVideo = document.createElement('video')
-  userVideo.id = userId
+  userVideo.dataset.userId = userId
   call.on('stream', (userVideoStream) => {
     addVideoStream(userVideo, userVideoStream)
   })
@@ -148,9 +149,9 @@ async function onScreenCaptureButtonClick() {
     myPeer.connections[key][0].peerConnection
       .getSenders()[1]
       .replaceTrack(myCaptureStream.getTracks()[0])
-  } else {
-    stream = myCaptureStream
   }
+
+  stream = myCaptureStream
 
   screenCaptureButton.classList.add('streaming')
   myVideo.srcObject = myCaptureStream
@@ -162,9 +163,9 @@ function changeToCameraStream() {
     myPeer.connections[key][0].peerConnection
       .getSenders()[1]
       .replaceTrack(myVideoStream.getTracks()[1])
-  } else {
-    stream = myVideoStream
   }
+
+  stream = myVideoStream
 
   screenCaptureButton.classList.remove('streaming')
   myVideo.srcObject = myVideoStream
