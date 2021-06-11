@@ -26,7 +26,7 @@ socket.on('user-connected', (userId) => {
   connectToNewUser(userId, stream)
 })
 socket.on('user-disconnected', (userId) => {
-  console.log(userId)
+  document.querySelector(`#${userId}`).remove()
 })
 
 myPeer.on('open', (id) => {
