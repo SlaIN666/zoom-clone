@@ -26,7 +26,16 @@ socket.on('user-connected', (userId) => {
   connectToNewUser(userId, stream)
 })
 socket.on('user-disconnected', (userId) => {
-  console.log(userId)
+  document.querySelector(`#${userId}`).remove()
+})
+socket.on('createMessage', (message) => {
+  const chatMessage = document.createElement('li')
+  chatMessage.innerText = message
+  chat.append(chatMessage)
+  chatWindow.scroll({
+    top: chatWindow.scrollHeight,
+    behavior: 'smooth',
+  })
 })
 
 myPeer.on('open', (id) => {
@@ -37,16 +46,6 @@ myPeer.on('call', (call) => {
   const video = document.createElement('video')
   call.on('stream', (userVideoStream) => {
     addVideoStream(video, userVideoStream)
-  })
-})
-
-socket.on('createMessage', (message) => {
-  const chatMessage = document.createElement('li')
-  chatMessage.innerText = message
-  chat.append(chatMessage)
-  chatWindow.scroll({
-    top: chatWindow.scrollHeight,
-    behavior: 'smooth',
   })
 })
 
@@ -73,6 +72,7 @@ async function initApp() {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const userVideo = document.createElement('video')
+  userVideo.id = userId
   call.on('stream', (userVideoStream) => {
     addVideoStream(userVideo, userVideoStream)
   })
@@ -139,12 +139,17 @@ async function onScreenCaptureButtonClick() {
     myCaptureStream = await navigator.mediaDevices.getDisplayMedia({
       video: { cursor: true },
     })
-    const key = Object.keys(myPeer.connections)[0]
+  } catch (error) {
+    return
+  }
+
+  const key = Object.keys(myPeer.connections)[0]
+  if (key) {
     myPeer.connections[key][0].peerConnection
       .getSenders()[1]
       .replaceTrack(myCaptureStream.getTracks()[0])
-  } catch (error) {
-    return
+  } else {
+    stream = myCaptureStream
   }
 
   screenCaptureButton.classList.add('streaming')
@@ -152,11 +157,14 @@ async function onScreenCaptureButtonClick() {
 }
 
 function changeToCameraStream() {
-  console.log(myVideoStream.getTracks()[1])
   const key = Object.keys(myPeer.connections)[0]
-  myPeer.connections[key][0].peerConnection
-    .getSenders()[1]
-    .replaceTrack(myVideoStream.getTracks()[1])
+  if (key) {
+    myPeer.connections[key][0].peerConnection
+      .getSenders()[1]
+      .replaceTrack(myVideoStream.getTracks()[1])
+  } else {
+    stream = myVideoStream
+  }
 
   screenCaptureButton.classList.remove('streaming')
   myVideo.srcObject = myVideoStream
