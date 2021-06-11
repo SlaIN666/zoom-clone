@@ -5,6 +5,7 @@ body {
 }
 
 .main {
+  width: 100vw;
   height: 100vh;
   display: flex;
 }
@@ -13,10 +14,13 @@ body {
   flex: 0.8;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .main__right {
   flex: 0.2;
+  height: 100%;
 }
 
 .main__videos {
@@ -29,13 +33,40 @@ body {
 }
 
 #video-grid {
+  width: 100%;
+  height: 100%;
   display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
 }
 
 video {
   width: 200px;
   height: 200px;
   object-fit: cover;
+  cursor: pointer;
+  border-radius: 5px;
+}
+video:hover {
+  transform: scale(1.2);
+}
+.video__bottom__right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+}
+.video__fullscreen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.video__fullscreen:hover {
+  transform: scale(1);
 }
 
 .main__controls {

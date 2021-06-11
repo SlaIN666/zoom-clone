@@ -9,6 +9,7 @@ let myVideoStream = null
 let myCaptureStream = null
 
 const myVideo = document.createElement('video')
+myVideo.classList.add('video__bottom__right')
 myVideo.muted = true
 
 const videoGrid = document.querySelector('#video-grid')
@@ -67,6 +68,7 @@ async function initApp() {
   cameraButton.addEventListener('click', onCameraButtonClick)
   chatButton.addEventListener('click', onChatButtonClick)
   screenCaptureButton.addEventListener('click', onScreenCaptureButtonClick)
+  document.addEventListener('click', onDocumentClick)
 }
 
 function connectToNewUser(userId, stream) {
@@ -170,6 +172,18 @@ function changeToCameraStream() {
   screenCaptureButton.classList.remove('streaming')
   myVideo.srcObject = myVideoStream
   myCaptureStream = null
+}
+
+function onDocumentClick(e) {
+  if (e.target.tagName === 'VIDEO') {
+    document.querySelectorAll('video').forEach((video) => {
+      if (video == e.target) {
+        video.classList.toggle('video__fullscreen')
+        return
+      }
+      video.classList.remove('video__fullscreen')
+    })
+  }
 }
 
 initApp()
