@@ -1,15 +1,17 @@
 const socket = io('/', { transports: ['polling'] })
-const videoGrid = document.querySelector('#video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
   port: '443',
 })
+let stream = null
 let myVideoStream = null
 let myCaptureStream = null
+
 const myVideo = document.createElement('video')
 myVideo.muted = true
 
+const videoGrid = document.querySelector('#video-grid')
 const leftBlock = document.querySelector('.main__left')
 const rightBlock = document.querySelector('.main__right')
 const chatInput = document.querySelector('#chat_message')
@@ -18,56 +20,53 @@ const chat = document.querySelector('.messages')
 const micButton = document.querySelector('#micButton')
 const cameraButton = document.querySelector('#cameraButton')
 const chatButton = document.querySelector('#chatButton')
-const leaveButton = document.querySelector('#leaveButton')
 const screenCaptureButton = document.querySelector('#screenCaptureButton')
 
-navigator.mediaDevices
-  .getUserMedia({
-    video: true,
-    audio: true,
+myPeer.on('call', (call) => {
+  call.answer(stream)
+  const video = document.createElement('video')
+  call.on('stream', (userVideoStream) => {
+    addVideoStream(video, userVideoStream)
   })
-  .then((stream) => {
-    myVideoStream = stream
-    addVideoStream(myVideo, stream)
-
-    myPeer.on('call', (call) => {
-      call.answer(stream)
-      const video = document.createElement('video')
-      call.on('stream', (userVideoStream) => {
-        addVideoStream(video, userVideoStream)
-      })
-    })
-
-    socket.on('user-connected', (userId) => {
-      connectToNewUser(userId, stream)
-    })
-
-    socket.on('createMessage', (message) => {
-      const chatMessage = document.createElement('li')
-      chatMessage.innerText = message
-      chat.append(chatMessage)
-      chatWindow.scroll({
-        top: chatWindow.scrollHeight,
-        behavior: 'smooth',
-      })
-    })
-
-    chatInput.addEventListener('keyup', (e) => {
-      if (e.keyCode === 13 && chatInput.value.length != 0) {
-        socket.emit('message', chatInput.value)
-        chatInput.value = ''
-      }
-    })
-    micButton.addEventListener('click', onMicButtonClick)
-    cameraButton.addEventListener('click', onCameraButtonClick)
-    chatButton.addEventListener('click', onChatButtonClick)
-    leaveButton.addEventListener('click', onLeaveButtonClick)
-    screenCaptureButton.addEventListener('click', onScreenCaptureButtonClick)
-  })
+})
 
 myPeer.on('open', (id) => {
   socket.emit('join-room', ROOM_ID, id)
 })
+
+socket.on('user-connected', (userId) => {
+  connectToNewUser(userId, stream)
+})
+
+socket.on('createMessage', (message) => {
+  const chatMessage = document.createElement('li')
+  chatMessage.innerText = message
+  chat.append(chatMessage)
+  chatWindow.scroll({
+    top: chatWindow.scrollHeight,
+    behavior: 'smooth',
+  })
+})
+
+async function initApp() {
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  })
+  myVideoStream = stream
+  addVideoStream(myVideo, stream)
+
+  chatInput.addEventListener('keyup', (e) => {
+    if (e.keyCode === 13 && chatInput.value.length != 0) {
+      socket.emit('message', chatInput.value)
+      chatInput.value = ''
+    }
+  })
+  micButton.addEventListener('click', onMicButtonClick)
+  cameraButton.addEventListener('click', onCameraButtonClick)
+  chatButton.addEventListener('click', onChatButtonClick)
+  screenCaptureButton.addEventListener('click', onScreenCaptureButtonClick)
+}
 
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
@@ -131,10 +130,6 @@ function onChatButtonClick(e) {
   chatButton.innerHTML = `<i class="fas fa-comment-alt"></i><span>Показать чат</span>`
 }
 
-function onLeaveButtonClick(e) {
-  socket.close()
-}
-
 async function onScreenCaptureButtonClick() {
   if (myCaptureStream) {
     changeToCameraStream()
@@ -142,7 +137,9 @@ async function onScreenCaptureButtonClick() {
   }
 
   try {
-    myCaptureStream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: true } })
+    myCaptureStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: true },
+    })
     const key = Object.keys(myPeer.connections)[0]
     myPeer.connections[key][0].peerConnection
       .getSenders()[1]
@@ -166,3 +163,5 @@ function changeToCameraStream() {
   myVideo.srcObject = myVideoStream
   myCaptureStream = null
 }
+
+initApp()

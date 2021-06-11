@@ -1,7 +1,7 @@
 {
   "name": "zoom_clone",
   "version": "1.0.0",
-  "description": "",
+  "description": "Working zoom clone, using socket.io, peerjs, express\r just pure javascript with nodejs",
   "main": "app.js",
   "scripts": {
     "nodemon": "nodemon app.js",
@@ -16,5 +16,14 @@
     "peer": "^0.6.1",
     "socket.io": "^4.1.2",
     "uuid": "^8.3.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlaIN666/zoom-clone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SlaIN666/zoom-clone/issues"
+  },
+  "homepage": "https://github.com/SlaIN666/zoom-clone#readme"
 }
