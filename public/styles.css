@@ -66,6 +66,11 @@ video:hover {
   z-index: 2;
   margin: 0px;
 }
+.little__videos video {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+}
 .video__fullscreen {
   position: absolute;
   width: 100%;
@@ -192,12 +197,6 @@ video:hover {
 
 .hidden {
   display: none;
-}
-
-.little__videos video {
-  width: 100px;
-  height: 100px;
-  margin: 5px;
 }
 
 @media screen and (max-width: 1024px) {
