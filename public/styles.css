@@ -48,6 +48,7 @@ video {
   cursor: pointer;
   border-radius: 5px;
   transition: transform 0.2s ease-in-out;
+  margin: 15px;
 }
 video:hover {
   transform: scale(1.2);
@@ -59,6 +60,7 @@ video:hover {
   width: 80px;
   height: 80px;
   z-index: 2;
+  margin: 0px;
 }
 .video__fullscreen {
   position: absolute;

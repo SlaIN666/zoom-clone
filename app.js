@@ -23,12 +23,15 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => {
   if (!req.query.login) {
-    req.query.login = uuidV4().slice(0, 3)
+    req.query.login = getRandomLogin()
   }
   res.redirect(`/${uuidV4()}?login=${req.query.login}`)
 })
 
 app.get('/:room', (req, res) => {
+  if (!req.query.login) {
+    req.query.login = getRandomLogin()
+  }
   res.render('room', { roomId: req.params.room, login: req.query.login })
 })
 
@@ -47,3 +50,7 @@ io.on('connection', (socket) => {
 })
 
 server.listen(process.env.PORT || 3030)
+
+function getRandomLogin() {
+  return uuidV4().slice(0, 3)
+}
