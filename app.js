@@ -22,11 +22,14 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.redirect(`/${uuidV4()}`)
+  if (!req.query.login) {
+    req.query.login = uuidV4().slice(0, 3)
+  }
+  res.redirect(`/${uuidV4()}?login=${req.query.login}`)
 })
 
 app.get('/:room', (req, res) => {
-  res.render('room', { roomId: req.params.room })
+  res.render('room', { roomId: req.params.room, login: req.query.login })
 })
 
 io.on('connection', (socket) => {

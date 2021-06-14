@@ -1,5 +1,7 @@
 const socket = io('/')
 const myPeer = new Peer()
+const peers = {}
+
 let stream = null
 let myVideoStream = null
 let myCaptureStream = null
@@ -23,7 +25,11 @@ socket.on('user-connected', (userId) => {
   connectToNewUser(userId, stream)
 })
 socket.on('user-disconnected', (userId) => {
-  document.querySelector(`video[data-user-id="${userId}"]`).remove()
+  if (peers[userId]) peers[userId].close()
+  const userVideo = document.querySelector(`video[data-user-id="${userId}"]`)
+  if (userVideo) {
+    userVideo.remove()
+  }
 })
 socket.on('createMessage', (message) => {
   const chatMessage = document.createElement('li')
@@ -56,7 +62,7 @@ async function initApp() {
 
   chatInput.addEventListener('keyup', (e) => {
     if (e.keyCode === 13 && chatInput.value.length != 0) {
-      socket.emit('message', chatInput.value)
+      socket.emit('message', `${LOGIN}: ${chatInput.value}`)
       chatInput.value = ''
     }
   })
@@ -77,6 +83,7 @@ function connectToNewUser(userId, stream) {
   call.on('close', () => {
     userVideo.remove()
   })
+  peers[userId] = call
 }
 
 function addVideoStream(video, stream) {
