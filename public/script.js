@@ -1,9 +1,5 @@
 const socket = io('/')
-const myPeer = new Peer(undefined, {
-  path: '/peerjs',
-  host: '/',
-  port: '443',
-})
+const myPeer = new Peer()
 let stream = null
 let myVideoStream = null
 let myCaptureStream = null
@@ -68,11 +64,10 @@ async function initApp() {
   cameraButton.addEventListener('click', onCameraButtonClick)
   chatButton.addEventListener('click', onChatButtonClick)
   screenCaptureButton.addEventListener('click', onScreenCaptureButtonClick)
-  document.addEventListener('click', onDocumentClick)
+  videoGrid.addEventListener('click', onVideoGridClick)
 }
 
 function connectToNewUser(userId, stream) {
-  debugger
   const call = myPeer.call(userId, stream)
   const userVideo = document.createElement('video')
   userVideo.dataset.userId = userId
@@ -174,7 +169,7 @@ function changeToCameraStream() {
   myCaptureStream = null
 }
 
-function onDocumentClick(e) {
+function onVideoGridClick(e) {
   if (e.target.tagName === 'VIDEO') {
     document.querySelectorAll('video').forEach((video) => {
       if (video == e.target) {
