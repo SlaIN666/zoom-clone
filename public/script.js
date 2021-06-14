@@ -92,6 +92,13 @@ function addVideoStream(video, stream) {
     video.play()
   })
   videoGrid.append(video)
+
+  if (videoGrid.childElementCount > 9) {
+    videoGrid.classList.add('little__videos')
+  }
+  if (videoGrid.childElementCount > 20) {
+    videoGrid.classList.add('little__videos')
+  }
 }
 
 function onMicButtonClick(e) {
@@ -122,13 +129,13 @@ function onCameraButtonClick(e) {
 
 function onChatButtonClick(e) {
   if (rightBlock.classList.contains('hidden')) {
-    leftBlock.style.flex = '0.8'
+    leftBlock.classList.remove('fullspace')
     rightBlock.classList.remove('hidden')
     chatButton.classList.remove('stop')
     chatButton.innerHTML = `<i class="fas fa-comment-alt"></i><span>Скрыть чат</span>`
     return
   }
-  leftBlock.style.flex = '1'
+  leftBlock.classList.add('fullspace')
   rightBlock.classList.add('hidden')
   chatButton.classList.add('stop')
   chatButton.innerHTML = `<i class="fas fa-comment-alt"></i><span>Показать чат</span>`
